@@ -1,8 +1,9 @@
 name: Setup Labels
+
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   setup-labels:
@@ -20,12 +21,17 @@ jobs:
           replace-existing: true
 
       - name: Delete Workflow File After Run
+        if: ${{ github.repository != 'Fedox-die-Ente/better-repo' }}
         env:
           REPO: ${{ github.repository }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           FILE_PATH=".github/workflows/setup-labels.yml"
           echo "Deleting workflow file $FILE_PATH..."
+          SHA=$(curl -s -H "Authorization: token $TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              https://api.github.com/repos/$REPO/contents/$FILE_PATH | jq -r .sha)
+          
           curl -X PUT \
             -H "Authorization: token $TOKEN" \
             -H "Accept: application/vnd.github+json" \
@@ -33,4 +39,5 @@ jobs:
             -d "$(jq -n \
                   --arg msg "Remove setup labels workflow" \
                   --arg content "" \
-                  '{"message": $msg, "content": $content, "sha": "$(curl -s -H \"Authorization: token '$TOKEN'\" https://api.github.com/repos/'$REPO'/contents/'$FILE_PATH' | jq -r .sha)"}')"
+                  --arg sha "$SHA" \
+                  '{"message": $msg, "content": $content, "sha": $sha}')"
