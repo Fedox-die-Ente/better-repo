@@ -951,3 +951,11 @@ Made with ❤️ by [Florian](https://github.com/Fedox-die-Ente)
 ![Profile views](https://visitor-badge.laobi.icu/badge?page_id=Fedox-die-Ente&left_text=Profile+views)
 
 </div>
+
+---
+
+<div align="center">
+
+<sub>generated using [better-repo](https://github.com/Fedox-die-Ente/better-repo)</sub>
+
+</div>
