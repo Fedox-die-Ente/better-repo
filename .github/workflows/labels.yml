@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Detect initial commit
-        id: check
+        id: check_commit
         uses: actions/github-script@v7
         with:
           script: |
@@ -24,16 +24,46 @@ jobs:
               repo: context.repo.repo,
               per_page: 2
             });
-            if (commits.length === 1) {
-              console.log("Initial commit detected.");
-              return true;
-            } else {
-              console.log("Not the initial commit. Skipping.");
-              return false;
-            }
+            const isInitial = commits.length === 1;
+            console.log(`Initial commit: ${isInitial}`);
+            return isInitial;
+
+      - name: Check if custom labels already exist
+        id: check_labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const existingLabels = await github.rest.issues.listLabelsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            const customLabels = [
+              "🔬 research",
+              "⚙️ ops",
+              "🤖 ci",
+              "🎬 demo",
+              "🐞 bug",
+              "✨ enhancement",
+              "📚 documentation",
+              "❓ question",
+              "🙋 help wanted",
+              "🌱 good first issue",
+              "🚫 wontfix",
+              "🔁 duplicate",
+              "❌ invalid",
+              "⏳ in progress",
+              "✅ ready for review",
+              "⛔ blocked",
+              "🔥 priority: high",
+              "⚡ priority: medium",
+              "🍃 priority: low"
+            ];
+            const exists = existingLabels.data.some(label => customLabels.includes(label.name));
+            console.log(`Custom labels exist: ${exists}`);
+            return exists;
 
       - name: Setup labels
-        if: steps.check.outputs.result == 'true'
+        if: steps.check_commit.outputs.result == 'true' && steps.check_labels.outputs.result == 'false'
         uses: actions/github-script@v7
         with:
           script: |
@@ -80,22 +110,3 @@ jobs:
                 color: label.color
               });
             }
-
-      - name: Delete workflow after run
-        if: steps.check.outputs.result == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const path = '.github/workflows/labels.yml';
-            const { data: file } = await github.rest.repos.getContent({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              path
-            });
-            await github.rest.repos.deleteFile({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              path,
-              message: 'Remove setup labels workflow after initial run',
-              sha: file.sha
-            });
