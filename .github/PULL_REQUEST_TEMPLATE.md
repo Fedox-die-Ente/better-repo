@@ -1,7 +1,3 @@
-# 🚀 Pull Request Title
-
-<!-- Short, concise description of the changes -->
-
 ## 📝 Description
 <!-- What has been changed and why? -->
 
