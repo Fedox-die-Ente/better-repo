@@ -1,43 +1,59 @@
-name: Setup Labels
+name: Update repository labels
 
 on:
   push:
     branches:
-      - master
+      - main
+    paths:
+      - '.github/workflows/labels.yml'
 
 jobs:
-  setup-labels:
+  create-labels:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    env:
+      LABELS_JSON: |
+        [
+          {"name": "🔬 research", "color": "ededed", "description": "Research needed"},
+          {"name": "⚙️ ops", "color": "c2e0c6", "description": "Ops task"},
+          {"name": "🤖 ci", "color": "bfdadc", "description": "Related to GitHub Actions / CI"},
+          {"name": "🎬 demo", "color": "bfdadc", "description": "Demo label"},
+          {"name": "🐞 bug", "color": "d73a4a", "description": "Bug report"},
+          {"name": "✨ enhancement", "color": "a2eeef", "description": "Feature request / enhancement"},
+          {"name": "📚 documentation", "color": "0075ca", "description": "Documentation update"},
+          {"name": "❓ question", "color": "d876e3", "description": "User question or inquiry"},
+          {"name": "🙋 help wanted", "color": "008672", "description": "Needs help from contributors"},
+          {"name": "🌱 good first issue", "color": "7057ff", "description": "Good entry point for new contributors"},
+          {"name": "🚫 wontfix", "color": "ffffff", "description": "Issue won't be fixed"},
+          {"name": "🔁 duplicate", "color": "cccccc", "description": "Duplicate issue"},
+          {"name": "❌ invalid", "color": "e6e6e6", "description": "Invalid issue or PR"},
+          {"name": "⏳ in progress", "color": "fbca04", "description": "Work in progress"},
+          {"name": "✅ ready for review", "color": "0e8a16", "description": "PR ready for review"},
+          {"name": "⛔ blocked", "color": "5319e7", "description": "Work is blocked"},
+          {"name": "🔥 priority: high", "color": "b60205", "description": "High priority"},
+          {"name": "⚡ priority: medium", "color": "d93f0b", "description": "Medium priority"},
+          {"name": "🍃 priority: low", "color": "0e8a16", "description": "Low priority"}
+        ]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Sync Labels
-        uses: peter-evans/create-or-update-label@v2
+      - uses: actions/github-script@v7
         with:
-          repository: ${{ github.repository }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          configuration-path: .github/labels.yml
-          replace-existing: true
-
-      - name: Delete Workflow File After Run
-        if: ${{ github.repository != 'Fedox-die-Ente/better-repo' }}
-        env:
-          REPO: ${{ github.repository }}
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          FILE_PATH=".github/workflows/setup-labels.yml"
-          echo "Deleting workflow file $FILE_PATH..."
-          SHA=$(curl -s -H "Authorization: token $TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              https://api.github.com/repos/$REPO/contents/$FILE_PATH | jq -r .sha)
-          
-          curl -X PUT \
-            -H "Authorization: token $TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/$REPO/contents/$FILE_PATH \
-            -d "$(jq -n \
-                  --arg msg "Remove setup labels workflow" \
-                  --arg content "" \
-                  --arg sha "$SHA" \
-                  '{"message": $msg, "content": $content, "sha": $sha}')"
+          script: |
+            const labels = JSON.parse(process.env.LABELS_JSON);
+            for (const label of labels) {
+              try {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name,
+                  description: label.description || '',
+                  color: label.color
+                });
+              } catch (error) {
+                if (error.status === 422) {
+                  console.log(`Label '${label.name}' already exists. Skipping.`);
+                } else {
+                  console.error(`Error creating label '${label.name}': ${error}`);
+                }
+              }
+            }
