@@ -2,7 +2,7 @@
 name: 💡 Feature Request
 about: Suggest a new feature or improvement
 title: "[FEATURE] Short description"
-labels: enhancement
+labels: ✨ enhancement
 assignees: ''
 ---
 

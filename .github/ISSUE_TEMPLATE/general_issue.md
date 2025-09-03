@@ -2,7 +2,7 @@
 name: 📑 General Issue
 about: Open a general issue (discussion, question, idea, etc.)
 title: "[GENERAL] Short description"
-labels: question
+labels: ❓ question
 assignees: ''
 ---
 

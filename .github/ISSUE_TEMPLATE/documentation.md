@@ -2,7 +2,7 @@
 name: 📚 Documentation
 about: Report missing, unclear, or outdated documentation
 title: "[DOCS] Short description"
-labels: documentation
+labels: 📚 documentation
 assignees: ''
 ---
 
