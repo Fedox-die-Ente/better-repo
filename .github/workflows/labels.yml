@@ -1,3 +1,4 @@
+# Remove this action after the initial commit, you won't need it anymore :)
 name: Setup Repository Labels
 
 on:
