@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Detect initial commit
         id: check_commit
@@ -111,7 +114,7 @@ jobs:
                 color: label.color
               });
             }
-            
+
       - name: 🎉 Setup Complete
         if: steps.check_commit.outputs.result == 'true' && steps.check_labels.outputs.result == 'false'
         run: |
