@@ -98,7 +98,7 @@ jobs:
               {"name": "⛔ blocked", "color": "5319e7", "description": "Work is blocked"},
               {"name": "🔥 priority: high", "color": "b60205", "description": "High priority"},
               {"name": "⚡ priority: medium", "color": "d93f0b", "description": "Medium priority"},
-              {"name": "🍃 priority: low", "color": "0e8a16", "description": "Low priority"}
+              {"name": "🍃 priority: low", "color": "86a17d", "description": "Low priority"}
             ];
 
             for (const label of labels) {
