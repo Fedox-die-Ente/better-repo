@@ -10,6 +10,7 @@ jobs:
   setup-labels:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       issues: write
     steps:
       - name: Checkout repository
