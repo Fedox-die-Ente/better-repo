@@ -111,3 +111,13 @@ jobs:
                 color: label.color
               });
             }
+            
+      - name: 🎉 Setup Complete
+        if: steps.check_commit.outputs.result == 'true' && steps.check_labels.outputs.result == 'false'
+        run: |
+          echo ""
+          echo "============================================================"
+          echo "✅  All custom labels have been created successfully!"
+          echo "⚠️  You can now safely delete this workflow (.github/workflows/labels.yml)!"
+          echo "============================================================"
+          echo ""
