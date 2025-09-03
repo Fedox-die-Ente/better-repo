@@ -1,0 +1,25 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/username/project-name/discussions
+    about: Start a discussion, ask questions, or share ideas
+  - name: 🔐 Security Issues
+    url: mailto:security@example.com
+    about: Please report security vulnerabilities privately via email
+issue_templates:
+  - name: 🐛 Bug Report
+    description: Report a reproducible bug or unexpected behavior
+    file: bug_report.md
+    labels: ["bug"]
+  - name: 💡 Feature Request
+    description: Suggest a new feature or improvement
+    file: feature_request.md
+    labels: ["enhancement"]
+  - name: 📚 Documentation
+    description: Report missing, unclear, or outdated documentation
+    file: documentation.md
+    labels: ["documentation"]
+  - name: 📝 General Issue
+    description: Open a general issue (discussion, question, idea, etc.)
+    file: general_issue.md
+    labels: ["question"]
